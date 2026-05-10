@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  
+  --color-natural-bg: #fdfcf8;
+  --color-natural-text: #3a3a30;
+  --color-natural-muted: #7a7a6a;
+  --color-natural-primary: #5a5a40;
+  --color-natural-accent: #d4a373;
+  --color-natural-border: #e5e5d8;
+  --color-natural-surface: #f0f0e8;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-natural-bg);
+  color: var(--color-natural-text);
+}
+
+/* Leaflet specific fixes */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.leaflet-popup-content {
+  margin: 12px;
+}

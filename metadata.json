@@ -1,0 +1,6 @@
+{
+  "name": "CampCharge Finder",
+  "description": "Find campsites and e-bike charging stations along your GPX route or near your current location.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["geolocation"]
+}
