@@ -40,6 +40,11 @@ export default function Sidebar({
   const [vehicleType, setVehicleType] = useState<'all' | 'motorhome' | 'caravan' | 'tent'>('all');
   const [minStars, setMinStars] = useState<number>(0);
   const [maxStars, setMaxStars] = useState<number>(5);
+  const [minRating, setMinRating] = useState<number>(0);
+  const [hasWlan, setHasWlan] = useState(false);
+  const [hasPool, setHasPool] = useState(false);
+  const [allowsDogs, setAllowsDogs] = useState(false);
+  const [priceRange, setPriceRange] = useState<'all' | 'free' | 'paid'>('all');
   const [showAllDetails, setShowAllDetails] = useState(false);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
@@ -137,9 +142,30 @@ export default function Sidebar({
         (minStars === 0 || stars >= minStars) &&
         (maxStars === 5 || stars <= maxStars)
       );
-      return typeMatch && campingSubMatch && vehicleMatch && starMatch;
+
+      // Advanced Camping Filters
+      const isCamping = p.type === PoiType.CAMPSITE || p.type === PoiType.STELLPLATZ;
+      const wlanMatch = !hasWlan || !isCamping || (
+        p.tags.internet_access === 'wlan' || p.tags.wifi === 'yes' || p.tags.internet_access === 'yes'
+      );
+      const poolMatch = !hasPool || !isCamping || (
+        p.tags.swimming_pool === 'yes' || p.tags.amenity === 'swimming_pool' || p.tags.leisure === 'swimming_pool'
+      );
+      const dogsMatch = !allowsDogs || !isCamping || (
+        p.tags.dogs === 'yes' || p.tags.pets === 'yes' || p.tags.dog === 'yes'
+      );
+      const priceMatch = priceRange === 'all' || !isCamping || (
+        (priceRange === 'free' && p.tags.fee === 'no') ||
+        (priceRange === 'paid' && p.tags.fee === 'yes')
+      );
+      
+      // Mock rating for demo if not present
+      const rating = parseFloat(p.tags.rating || '4.0');
+      const ratingMatch = minRating === 0 || rating >= minRating;
+
+      return typeMatch && campingSubMatch && vehicleMatch && starMatch && wlanMatch && poolMatch && dogsMatch && priceMatch && ratingMatch;
     });
-  }, [pois, activeFilter, campingType, vehicleType, minStars, maxStars]);
+  }, [pois, activeFilter, campingType, vehicleType, minStars, maxStars, hasWlan, hasPool, allowsDogs, priceRange, minRating]);
 
   // Close review form when POI changes
   React.useEffect(() => {
@@ -618,6 +644,56 @@ export default function Sidebar({
                         {v.label}
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-1">
+                  <label className="text-[10px] font-bold text-natural-muted uppercase tracking-tight">Ausstattung</label>
+                  <div className="flex flex-wrap gap-1">
+                    {[
+                      { id: 'wlan', label: 'WLAN', state: hasWlan, setter: setHasWlan, icon: Globe },
+                      { id: 'pool', label: 'Pool', state: hasPool, setter: setHasPool, icon: Sparkles },
+                      { id: 'dogs', label: 'Hunde', state: allowsDogs, setter: setAllowsDogs, icon: User },
+                    ].map(feat => (
+                      <button
+                        key={feat.id}
+                        onClick={() => feat.setter(!feat.state)}
+                        className={cn(
+                          "flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[9px] font-bold transition-all",
+                          feat.state 
+                            ? "bg-natural-accent border-natural-accent text-white" 
+                            : "bg-white border-natural-border text-natural-muted hover:border-natural-accent"
+                        )}
+                      >
+                        <feat.icon size={10} />
+                        {feat.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-natural-muted uppercase tracking-tight">Preis & Bewertung</label>
+                  <div className="flex gap-2">
+                    <select 
+                      value={priceRange}
+                      onChange={(e) => setPriceRange(e.target.value as any)}
+                      className="flex-1 bg-white border border-natural-border rounded-lg px-2 py-1 text-[10px] font-bold text-natural-muted outline-none focus:border-natural-accent"
+                    >
+                      <option value="all">Preis: Alle</option>
+                      <option value="free">Kostenlos</option>
+                      <option value="paid">Kostenpflichtig</option>
+                    </select>
+                    <select 
+                      value={minRating}
+                      onChange={(e) => setMinRating(parseFloat(e.target.value))}
+                      className="flex-1 bg-white border border-natural-border rounded-lg px-2 py-1 text-[10px] font-bold text-natural-muted outline-none focus:border-natural-accent"
+                    >
+                      <option value="0">Bewertung: Alle</option>
+                      <option value="3">3+ Sterne</option>
+                      <option value="4">4+ Sterne</option>
+                      <option value="4.5">4.5+ Sterne</option>
+                    </select>
                   </div>
                 </div>
               </div>

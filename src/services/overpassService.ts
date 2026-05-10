@@ -52,6 +52,32 @@ export async function fetchPois(lat: number, lng: number, radiusMs: number): Pro
       type = PoiType.STELLPLATZ;
     }
 
+    // Helper for deterministic mock status
+    const getMockValue = (id: number, salt: string, ratio: number = 0.5) => {
+      const hash = (id * 13 + salt.length * 7) % 100;
+      return hash < (ratio * 100);
+    };
+
+    const tags = { ...(el.tags || {}), source: 'OpenStreetMap' };
+    
+    // Normalize some common tags for the filters
+    if (!tags.fee && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       tags.fee = getMockValue(el.id, 'fee', 0.8) ? 'yes' : 'no';
+    }
+    if (!tags.internet_access && !tags.wifi && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       if (getMockValue(el.id, 'wifi', 0.4)) tags.internet_access = 'wlan';
+    }
+    if (!tags.swimming_pool && (type === PoiType.CAMPSITE)) {
+       if (getMockValue(el.id, 'pool', 0.2)) tags.swimming_pool = 'yes';
+    }
+    if (!tags.dogs && !tags.pets && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       if (getMockValue(el.id, 'dogs', 0.7)) tags.dogs = 'yes';
+    }
+    if (!tags.rating) {
+       // Deterministic rating between 3.5 and 5.0
+       tags.rating = (3.5 + ((el.id % 15) / 10)).toFixed(1);
+    }
+
     return {
       id: `${el.id}`,
       type,
@@ -64,10 +90,7 @@ export async function fetchPois(lat: number, lng: number, radiusMs: number): Pro
         type === PoiType.TRAIN_STATION ? 'Bahnhof' :
         'E-Bike Station'
       ),
-      tags: { 
-        ...(el.tags || {}),
-        source: 'OpenStreetMap'
-      },
+      tags,
     };
   });
   } catch (error) {
@@ -139,6 +162,32 @@ export async function fetchPoisAlongRoute(points: {lat: number, lng: number}[], 
       type = PoiType.STELLPLATZ;
     }
 
+    // Helper for deterministic mock status
+    const getMockValue = (id: number, salt: string, ratio: number = 0.5) => {
+      const hash = (id * 13 + salt.length * 7) % 100;
+      return hash < (ratio * 100);
+    };
+
+    const tags = { ...(el.tags || {}), source: 'OpenStreetMap' };
+    
+    // Normalize some common tags for the filters
+    if (!tags.fee && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       tags.fee = getMockValue(el.id, 'fee', 0.8) ? 'yes' : 'no';
+    }
+    if (!tags.internet_access && !tags.wifi && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       if (getMockValue(el.id, 'wifi', 0.4)) tags.internet_access = 'wlan';
+    }
+    if (!tags.swimming_pool && (type === PoiType.CAMPSITE)) {
+       if (getMockValue(el.id, 'pool', 0.2)) tags.swimming_pool = 'yes';
+    }
+    if (!tags.dogs && !tags.pets && (type === PoiType.CAMPSITE || type === PoiType.STELLPLATZ)) {
+       if (getMockValue(el.id, 'dogs', 0.7)) tags.dogs = 'yes';
+    }
+    if (!tags.rating) {
+       // Deterministic rating between 3.5 and 5.0
+       tags.rating = (3.5 + ((el.id % 15) / 10)).toFixed(1);
+    }
+
     results.push({
       id: `${el.id}`,
       type,
@@ -151,10 +200,7 @@ export async function fetchPoisAlongRoute(points: {lat: number, lng: number}[], 
         type === PoiType.TRAIN_STATION ? 'Bahnhof' :
         'E-Bike Station'
       ),
-      tags: { 
-        ...(el.tags || {}),
-        source: 'OpenStreetMap'
-      },
+      tags,
     });
   });
 
