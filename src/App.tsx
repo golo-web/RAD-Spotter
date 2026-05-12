@@ -10,6 +10,7 @@ import type { Route, POI } from './types';
 export default function App() {
   const [route, setRoute] = useState<Route | null>(null);
   const [pois, setPois] = useState<POI[]>([]);
+  const [filteredPois, setFilteredPois] = useState<POI[]>([]);
   const [currentLocation, setCurrentLocation] = useState<[number, number] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [radius, setRadius] = useState(15);
@@ -263,6 +264,7 @@ export default function App() {
             onError={setError}
             selectedPoiId={selectedPoiId}
             onSelectPoi={handleSelectPoi}
+            onFilteredPoisChange={setFilteredPois}
           />
         </div>
 
@@ -277,7 +279,7 @@ export default function App() {
         <main className="flex-1 relative h-full">
           <Map 
             route={route}
-            pois={pois}
+            pois={filteredPois}
             currentLocation={currentLocation}
             selectedPoiId={selectedPoiId}
           />

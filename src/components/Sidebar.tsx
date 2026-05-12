@@ -17,6 +17,7 @@ interface SidebarProps {
   onError: (error: string | null) => void;
   selectedPoiId: string | null;
   onSelectPoi: (id: string | null) => void;
+  onFilteredPoisChange?: (pois: POI[]) => void;
 }
 
 export default function Sidebar({ 
@@ -30,7 +31,8 @@ export default function Sidebar({
   error, 
   onError,
   selectedPoiId,
-  onSelectPoi
+  onSelectPoi,
+  onFilteredPoisChange
 }: SidebarProps) {
   const [locationQuery, setLocationQuery] = useState('');
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -171,6 +173,12 @@ export default function Sidebar({
   React.useEffect(() => {
     setIsReviewFormOpen(false);
   }, [selectedPoiId]);
+
+  React.useEffect(() => {
+    if (onFilteredPoisChange) {
+      onFilteredPoisChange(filteredPois);
+    }
+  }, [filteredPois, onFilteredPoisChange]);
 
   return (
     <div className="w-80 h-full bg-white border-r border-natural-border flex flex-col shadow-xl z-10 relative">
