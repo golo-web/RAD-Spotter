@@ -1,73 +1,60 @@
-# RAD-Spotter: Der Touren-Begleiter
+# CampingScout
 
-RAD-Spotter ist eine spezialisierte Web-Anwendung für Radreisende und E-Biker. Sie ermöglicht es, GPX-Routen hochzuladen und entlang dieser Route gezielt nach Unterkünften (Campingplätze, Hotels) und E-Bike-Ladestationen zu suchen.
+CampingScout ist eine moderne und responsive Web-Anwendung für Radreisende, Camper und E-Biker. Sie ermöglicht es, gezielt nach Unterkünften (Campingplätze, Stellplätze, Hotels), Mobilitäts-Stationen (Bahnhöfe) und Ladepunkten entlang von eigenen GPX-Routen oder in einer bestimmten Umgebung zu suchen.
 
-## 🚀 Funktionen
+## 🚀 Aktuelle Funktionen
 
-- **GPX-Integration:** Upload und Visualisierung von Fahrradrouten.
-- **Intelligente Umkreissuche:** Suche nach Points of Interest (POI) in einem definierbaren Radius (1-50 km) entlang des gesamten Routenverlaufs.
-- **Kategorien-Filter:**
-  - **Campingplätze:** Suche nach Zelt- und Stellplätzen.
-  - **Stellplätze:** Detaillierte Filter für Wohnmobile, Wohnwagen und Zelte (Radreisende).
-  - **Hotels:** Inklusive Filterung nach Hotel-Kategorie (Sterne).
-  - **Bahnhöfe:** Anzeige von Bahnhöfen für die An- und Abreise oder Etappenplanung.
-  - **E-Bike Ladestationen:** Anzeige von öffentlich zugänglichen Ladepunkten.
-- **PLZ-Suche:** Intelligente Ortssuche für Deutschland mit Autofortschrittung/Vorschlägen (via Nominatim).
-- **Detailansicht:** Ausführliche Informationen zu jedem Spot (Kontakt, Website, Öffnungszeiten, Ausstattung).
-- **Navigation:** Direkte Links zu Google Maps für Adresssuche und Routenführung.
-- **Nutzer-Feedback:** System für Rezensionen und Bewertungen pro Standort.
+### 🗺️ Karten- und Ortssuche
+- **Interaktive Karte:** Nahtlose Visualisierung von Suchergebnissen, Routen und eigenen Positionen mittels Leaflet.
+- **Intelligente Standortsuche:** Eingabe von Postleitzahl (PLZ) oder Ortsnamen in Deutschland mit sofortigen Autocomplete-Vorschlägen.
+- **Umkreissuche ("In der Nähe"):** Automatische Ermittlung der naheliegendsten Spots um die aktuelle GPS-Position des Nutzers.
+- **Radius-Einstellung:** Slider zur flexiblen Anpassung des Suchradius (1 bis 50 km).
 
-## 🛠 Genutzte Dienste & APIs
+### 🚴 GPX-Routen Integration
+- **Touren-Upload:** Einfaches Importieren (.gpx Dateien) eigener Routen.
+- **Routen-Darstellung:** Automatische farbliche Markierung des Streckenverlaufs auf der Karte.
+- **Streckenbasierte Suche:** Findet passende POIs (Points of Interest) in einem definierten Korridor (Suchradius) entlang der kompletten gefahrenen oder geplanten Strecke.
 
-Die Anwendung kombiniert Daten aus mehreren Quellen:
+### 🔍 Detaillierte Filter & Kategorien
+Die Anwendung bietet zielgruppengenaue Filterfunktionen:
+- **Hauptkategorien:** Alle, Camping/Stellplätze, Hotels, Bahnhöfe, E-Bike Ladestationen.
+- **Erweiterte Camping-Filter:**
+  - *Fahrzeugart:* Gezielte Suche nach Plätzen für Wohnmobile, Wohnwagen oder Zelte.
+  - *Ausstattung:* Filter für WLAN, Pool und erlaubte Haustiere (Hunde).
+  - *Preis:* Auswahl zwischen allen Plätzen, explizit kostenlosen oder kostenpflichtigen Spots.
+  - *Bewertungen:* Filterung nach Mindest-Sternebewertung (z.B. 3+, 4+, 4.5+).
+- **Erweiterte Hotel-Filter:** Filterung der Hotels nach offizieller Sterne-Klassifikation.
 
-### 1. OpenStreetMap (via Overpass API)
-- **Zweck:** Abfrage von Campingplätzen, Hotels und Bahnhöfen.
-- **Endpunkt:** `https://overpass-api.de/api/interpreter`
-- **Logik:** Nutzt die `around`-Abfrage von Overpass, um Entitäten innerhalb eines Radius um die Koordinatenpunkte der GPX-Datei oder eines Suchorts zu finden.
-- **Tags:** Filtert nach `tourism=camp_site`, `tourism=caravan_site`, `tourism=hotel` und `railway=station`.
+### 📋 Detailansicht & Ergebnislisten
+- **Ergebnisliste:** Sidebar-Liste aller gefundenen Spots, sortiert nach Relevanz.
+- **Loading-States:** Elegante Shimmering-/Skeleton-Animationen (`framer-motion`) während Daten abgerufen werden.
+- **Umfassende POI-Details:** 
+  - Informationen wie Name, Adressdaten, ggf. Website und Telefonnummer.
+  - Schnelle visuelle Übersicht der Ausstattung durch Icons.
+- **Navigation Shortcuts:** Entfernungsangaben (Luftlinie) sowie ein Button zur direkten externen Navigationsplanung mit Google Maps.
+- **Bewertungssystem (Mock):** Eingabemaske für Nutzer zur Abgabe individueller Kommentare und einer Sterne-Bewertung.
 
-### 2. Open Charge Map (OCM)
-- **Zweck:** Abfrage von E-Bike Ladestationen.
+### 📱 Responsive UI & Usability
+- **Mobile First Approach:** Die Sidebar kann auf kleinen Bildschirmen per Hamburger-Menü ein- und ausgeblendet werden und fungiert als Overlay mit abgedunkeltem Hintergrund.
+- **Zwei-Modus-Design:** Nahtloser Wechsel zwischen allgemeiner _Umkreissuche_ und spezifischer _Tour-Ansicht_.
 
-### 3. Nominatim (OpenStreetMap Search)
-- **Zweck:** Geocoding und Autocomplete für die Ortssuche in Deutschland.
-- **Endpunkt:** `https://nominatim.openstreetmap.org/search`
-- **Endpunkt:** `https://api.openchargemap.io/v3/poi/`
-- **Logik:** Sucht nach Ladestationen mit spezifischen Filtern für Fahrräder/E-Bikes (`bicycle=yes` oder `socket:ebike=yes`).
+## 🛠️ Technologien & Komponenten
 
-## 📦 Installation & Entwicklung
+- **Frontend:** React 18, Vite, TypeScript
+- **Styling:** Tailwind CSS
+- **Interaktionen & Animationen:** Framer Motion (`motion/react`), Lucide React (Icons)
+- **Karten-Library:** Leaflet (`react-leaflet`)
 
-### Voraussetzungen
-- Node.js (Version 18 oder höher)
-- npm oder yarn
+## 📡 Genutzte APIs
 
-### Schritte
-1. **Repository klonen oder herunterladen.**
-2. **Abhängigkeiten installieren:**
-   ```bash
-   npm install
-   ```
-3. **Entwicklungsserver starten:**
-   ```bash
-   npm run dev
-   ```
-4. **Produktions-Build erstellen:**
-   ```bash
-   npm run build
-   ```
+- **OpenStreetMap (Overpass API):** Zum effizienten Suchen von Campingplätzen, Stellplätzen, Hotels und Bahnhöfen in bestimmten Bounding-Boxen oder um Koordinaten.
+- **Nominatim API (OSM):** Für Geocoding-Funktionen und die PLZ/Orts-Suchvorschläge.
 
-## 🏗 Projektstruktur
+## 💡 Ideen und zukünftige Erweiterungen
 
-- `/src/components`: UI-Komponenten (Karte, Sidebar, Filter).
-- `/src/services`: Logik für API-Aufrufe (`overpassService.ts`, `chargingService.ts`).
-- `/src/lib`: Hilfsfunktionen (z.B. GPX-Parsing, Styling-Utilities).
-- `/src/types.ts`: Zentrale TypeScript-Definitionen.
-
-## 💡 Ideen zur Reproduktion & Erweiterung
-
-Um das Projekt weiterzuentwickeln oder für andere Zwecke anzupassen, könnten folgende Punkte interessant sein:
-- **Offline-Modus:** Caching der Suchergebnisse via Service Worker für Regionen mit schlechtem Empfang.
-- **Höhenprofil:** Anzeige des Höhenprofils der geladenen GPX-Datei.
-- **Wetter-Integration:** Abfrage aktueller Wetterdaten für die Zielregionen entlang der Route.
-- **Echtzeit-Verfügbarkeit:** Integration von Buchungssystemen für Hotels oder Status-Abfragen für Ladestationen.
+- **Echtes Backend (z.B. Firebase / Supabase):** Bislang ist das Bewertungssystem ein UI-Mockup. Mit einem Backend lassen sich Reviews echter Nutzer speichern; ebenso könnten Lieblings-Spots und eigene GPX-Routen fest mit einem Account verknüpft werden.
+- **Community-Features:** Freigabe von gefahrenen GPX-Routen inklusive persönlicher POI-Hinweise für andere Nutzer.
+- **Offline-Modus:** Caching der Kartendaten, Tiles und zuletzt gesuchter Bereiche via Service Worker / PWA, sehr praktisch in Gegenden mit schlechter Netzabdeckung.
+- **Höhenprofil:** Visualisierung der Höhenmeter und Steigungen analog zur eingezeichneten GPX-Routenlinie.
+- **Wetter-Modul:** Einblenden eines lokalen Wetterberichts oder einer Wettervorhersage spezifisch für Wegpunkte der Tour.
+- **Echtzeit-Verfügbarkeits-Check:** Integration externer APIs von Platzbetreibern oder Hotel-Booking-Systemen, um freie Plätze live darzustellen, bevor man diese anfährt.
