@@ -764,23 +764,43 @@ export default function Sidebar({
         <section className="space-y-3 pt-3 border-t border-natural-border">
           <div className="flex justify-between items-center px-1">
              <h2 className="text-[9px] font-bold text-natural-muted uppercase tracking-[0.2em] flex items-center gap-1.5">
-               <Info size={10} /> Treffer ({filteredPois.length})
+               <Info size={10} /> Treffer ({isLoading ? '...' : filteredPois.length})
              </h2>
           </div>
           
           <div className="grid grid-cols-1 gap-2">
             <AnimatePresence mode="popLayout">
-              {filteredPois.length === 0 && !isLoading && (
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <motion.div
+                    layout
+                    key={`skeleton-${idx}`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="p-3 rounded-2xl border bg-natural-surface border-natural-border animate-pulse"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="h-4 w-16 bg-natural-border/50 rounded-full" />
+                    </div>
+                    <div className="h-4 w-3/4 bg-natural-border/50 rounded mb-2" />
+                    <div className="h-3 w-1/2 bg-natural-border/50 rounded opacity-60" />
+                  </motion.div>
+                ))
+              ) : filteredPois.length === 0 ? (
                 <motion.p 
+                  layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   className="text-xs text-natural-muted italic text-center py-4"
                 >
                   Keine Spots gefunden. Versuchen Sie einen größeren Radius oder anderen Filter.
                 </motion.p>
-              )}
-              {filteredPois.map((poi, idx) => (
-                <motion.div
+              ) : (
+                filteredPois.map((poi, idx) => (
+                  <motion.div
                   layout
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -825,7 +845,7 @@ export default function Sidebar({
                     </p>
                   )}
                 </motion.div>
-              ))}
+              )))}
             </AnimatePresence>
           </div>
         </section>
